@@ -102,7 +102,7 @@ export default function ContactUs() {
   const contactInfo = [
     { icon: <FiPhone />, label: "CALL CENTER", value: "+971 56 702 7043", sub: "Available Mon–Fri" },
     { icon: <FiMapPin />, label: "OUR LOCATION", value: "Warehouse-16", sub: "Al Sajja, Sharjah" },
-    { icon: <FiMail />, label: "EMAIL US", value: "neuros@mail.co", sub: "24hr response" },
+    { icon: <FiMail />, label: "EMAIL US", value: "info@romosoceramica.com", sub: "24hr response" },
     { icon: <FiClock />, label: "WORKING HOURS", value: "9AM – 6PM", sub: "Monday to Friday" },
   ];
 
