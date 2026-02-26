@@ -1,13 +1,82 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Box, Typography, Card, Button } from "@mui/material";
-import { motion, AnimatePresence } from "framer-motion";
-import { FaCubes, FaLeaf, FaGem, FaHandshake, FaWarehouse, FaBorderAll, FaChair, FaHome, FaBath, FaProjectDiagram, FaStore, FaTools, FaBuilding } from "react-icons/fa";
+import { motion, useScroll, useTransform, cubicBezier } from "framer-motion";
+import { FaCubes, FaLeaf, FaGem, FaHandshake, FaWarehouse, FaBorderAll, FaTools, FaStore, FaProjectDiagram, FaBuilding } from "react-icons/fa";
 
+const fadeUp = {
+    hidden: { opacity: 0, y: 50 },
+    show: (i = 0) => ({
+        opacity: 1, y: 0,
+        transition: { duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1), delay: i * 0.15 },
+    }),
+};
+
+/* ── Reusable tile-background section wrapper (same pattern as HomeLanding) ── */
+const TileBgSection = ({
+    children,
+    style = {},
+    tintOpacity = 0.82,
+}: {
+    children: React.ReactNode;
+    style?: React.CSSProperties;
+    tintOpacity?: number;
+}) => (
+    <div style={{ position: "relative", ...style }}>
+        <div style={{
+            position: "absolute", inset: 0, zIndex: 0,
+            backgroundImage: `url('/assets/images/background/back3.jpg')`,
+            backgroundSize: "cover", backgroundPosition: "center",
+            backgroundAttachment: "fixed",
+        }} />
+        <div style={{
+            position: "absolute", inset: 0, zIndex: 1,
+            background: `rgba(12,11,9,${tintOpacity})`,
+        }} />
+        <div style={{
+            position: "absolute", inset: 0, zIndex: 2,
+            background: "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201,169,110,0.04) 0%, transparent 70%)",
+        }} />
+        <div style={{ position: "relative", zIndex: 3 }}>
+            {children}
+        </div>
+    </div>
+);
+
+/* ── Tile peek divider (same as HomeLanding) ── */
+const TilePeekDivider = ({ label }: { label: string }) => (
+    <div style={{ position: "relative", height: 120, overflow: "hidden" }}>
+        <div style={{
+            position: "absolute", inset: 0,
+            backgroundImage: `url('/assets/images/background/back3.jpg')`,
+            backgroundSize: "cover", backgroundPosition: "center",
+            backgroundAttachment: "fixed",
+            filter: "brightness(0.25) saturate(0.6)",
+        }} />
+        <div style={{
+            position: "absolute", inset: 0,
+            background: "linear-gradient(to bottom, #0c0b09 0%, transparent 40%, transparent 60%, #0c0b09 100%)",
+        }} />
+        <div style={{
+            position: "absolute", inset: 0,
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 20,
+        }}>
+            <div style={{ height: 1, width: 60, background: "linear-gradient(to right, transparent, rgba(201,169,110,0.4))" }} />
+            <span style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 9, letterSpacing: "0.35em", color: "rgba(201,169,110,0.5)" }}>
+                {label}
+            </span>
+            <div style={{ height: 1, width: 60, background: "linear-gradient(to left, transparent, rgba(201,169,110,0.4))" }} />
+        </div>
+    </div>
+);
 
 export default function AboutUs() {
+    const heroRef = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+    const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
+    const heroOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
+
     const highlightData = [
         { icon: <FaCubes />, title: "New", sub: "Fresh Vision" },
         { icon: <FaGem />, title: "100%", sub: "Quality Focus" },
@@ -15,11 +84,11 @@ export default function AboutUs() {
         { icon: <FaHandshake />, title: "Trusted", sub: "Customer Care" },
     ];
 
-    const whyChoose = [
-        { icon: <FaCubes />, title: "Premium Quality", desc: "Durable, reliable, crafted with care" },
-        { icon: <FaGem />, title: "Elegant Designs", desc: "Timeless & modern patterns" },
-        { icon: <FaLeaf />, title: "Eco-Friendly", desc: "Sustainable practices" },
-        { icon: <FaHandshake />, title: "Customer Focused", desc: "Satisfaction at the heart" },
+    const services = [
+        { icon: <FaTools />, title: "Tile Fixing Services", desc: "Professional tile installation with precision, durability, and a flawless finish for every space." },
+        { icon: <FaStore />, title: "Tile Selling", desc: "Extensive collection of premium tiles available at competitive prices, tailored to every design need." },
+        { icon: <FaProjectDiagram />, title: "End-to-End Solutions", desc: "From consultation to installation, we provide complete tile solutions under one trusted roof." },
+        { icon: <FaBuilding />, title: "One-Stop Shop", desc: "Discover everything related to tiles — variety, quality, and service — all in one place." },
     ];
 
     const galleryImages = [
@@ -30,726 +99,302 @@ export default function AboutUs() {
         "/assets/images/all_tiles_product/GREEN-MAJESTIC_1-scaled.jpg",
     ];
 
-    const furnitureImages = [
-        "/assets/images/all_tiles_product/ONICE-COBALTO_1-scaled.jpg",
-        "/assets/images/all_tiles_product/ORANGE-SAPPHIRE_1-scaled.jpg",
-        "/assets/images/all_tiles_product/ARENARIA_STONE_IVORY_1-scaled.jpg",
-        "/assets/images/all_tiles_product/JADE_1-scaled.jpg",
-        "/assets/images/all_tiles_product/GREEN-MAJESTIC_1-scaled.jpg",
-    ];
-
-
-    const services = [
-        {
-            icon: <FaBath size={32} />,
-            title: "Carpets & Rugs",
-            desc: "There are many variations of passages of Lorem Ipsum available majority",
-        },
-        {
-            icon: <FaHome size={32} />,
-            title: "Laminate Flooring",
-            desc: "There are many variations of passages of Lorem Ipsum available majority",
-        },
-        {
-            icon: <FaChair size={32} />,
-            title: "Vinyl Flooring",
-            desc: "There are many variations of passages of Lorem Ipsum available majority",
-        },
-    ];
-
-
-    const [photoIndex, setPhotoIndex] = useState(0);
-    const [isOpen, setIsOpen] = useState(false);
-    const [carouselIndex, setCarouselIndex] = useState(0);
-
-    // Auto slider for gallery
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCarouselIndex((prev) => (prev + 1) % galleryImages.length);
-        }, 3000); // every 3 seconds
-        return () => clearInterval(interval);
-    }, []);
-
-    const FlexContainer = (props: { children: React.ReactNode; style?: React.CSSProperties }) => (
-        <Box
-            sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "center",
-                gap: 4,
-                maxWidth: 1200,
-                mx: "auto",
-            }}
-            style={props.style}
-        >
-            {props.children}
-        </Box>
-    );
-
-    const Section = (props: { bg?: string; children: React.ReactNode; style?: React.CSSProperties }) => (
-        <Box
-            sx={{
-                py: 16,
-                bgcolor: props.bg || undefined,
-                background: props.bg
-                    ? undefined
-                    : "linear-gradient(to right, rgba(243,244,246,0.7), rgba(255,255,255,0.5), rgba(243,244,246,0.7))",
-                backdropFilter: "blur(2px)",
-            }}
-            style={props.style}
-        >
-            {props.children}
-        </Box>
-    );
-
     return (
-        <Box
-            className="min-h-screen relative overflow-hidden"
-            style={{
-                backgroundImage: `url('/assets/images/background/back3.jpg')`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundAttachment: "fixed",
+        <div style={{ background: "#0c0b09", fontFamily: "'Cormorant Garamond', Georgia, serif", overflowX: "hidden" }}>
+            <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap');
 
-            }}
-        >
-            {/* Hero Section */}
-            <div className="relative h-[28rem] w-full overflow-hidden">
+        :root {
+          --gold: #c9a96e; --gold-light: #e8d5a3; --cream: #f5f0e8;
+          --dark: #0c0b09; --dark-2: #161410; --dark-3: #1e1c18; --dark-4: #242018;
+          --text-muted: #7a7060;
+        }
 
-                {/* 1. Background Image */}
-                <img
-                    src="/assets/images/about/about_us.jpg"
-                    alt="Modern, architectural background representing connection"
-                    className="w-full h-full object-cover transition-transform duration-[4000ms] ease-out hover:scale-105" // 👈 Added subtle hover effect
-                />
+        .noise-overlay {
+          position:fixed; inset:0; pointer-events:none; z-index:1000; opacity:0.025;
+          background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
 
-                {/* 2. Gradient Overlay for Typography Clarity and Depth */}
-                <div
-                    className="absolute inset-0 bg-gradient-to-tr from-gray-900/80 via-black/80 to-gray-900/80"
-                />
+        .divider { height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
 
-                <div className="absolute inset-0 max-w-7xl mx-auto flex flex-col justify-center px-6 sm:px-12">
+        .grid-bg {
+          background-image: linear-gradient(rgba(201,169,110,0.035) 1px,transparent 1px), linear-gradient(90deg,rgba(201,169,110,0.035) 1px,transparent 1px);
+          background-size:80px 80px;
+        }
 
-                    <div className="flex flex-col sm:flex-row justify-between items-center w-full">
+        @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
+        .gold-shimmer {
+          background:linear-gradient(90deg,var(--gold) 0%,var(--gold-light) 45%,var(--gold) 85%);
+          background-size:200%; -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+          background-clip:text; animation:shimmer 4s ease infinite;
+        }
 
-                        {/* Heading: Centered on Mobile, Left-aligned on Desktop */}
-                        <h1 className="text-4xl sm:text-7xl font-extrabold text-white tracking-tight leading-tight drop-shadow-xl text-center sm:text-left mb-4 sm:mb-0">
-                            About Us
-                            <div className="w-16 h-1 bg-white mt-3 rounded-full mx-auto sm:mx-0" />
+        @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+        .marquee-track { animation:marquee 22s linear infinite; display:flex; gap:24px; width:max-content; }
+
+        /* Service cards — glass effect when over tile bg */
+        .service-card {
+          background:rgba(30,28,24,0.82); backdrop-filter:blur(8px);
+          border:1px solid rgba(201,169,110,0.1); border-radius:2px;
+          padding:40px 32px; position:relative; overflow:hidden;
+          transition:border-color 0.4s,transform 0.4s;
+        }
+        .service-card::after {
+          content:''; position:absolute; bottom:0; left:0;
+          width:0; height:2px;
+          background:linear-gradient(90deg,var(--gold),var(--gold-light));
+          transition:width 0.4s ease;
+        }
+        .service-card:hover { border-color:rgba(201,169,110,0.3); transform:translateY(-6px); }
+        .service-card:hover::after { width:100%; }
+
+        /* Highlight cards — glass when over tile bg */
+        .highlight-card {
+          background:rgba(30,28,24,0.8); backdrop-filter:blur(6px);
+          border:1px solid rgba(201,169,110,0.1); border-radius:2px;
+          padding:40px 28px; text-align:center;
+          transition:border-color 0.4s,transform 0.4s;
+        }
+        .highlight-card:hover { border-color:rgba(201,169,110,0.3); transform:translateY(-6px); }
+
+        .ghost-btn {
+          display:inline-flex; align-items:center; gap:10px;
+          padding:16px 48px; border:1px solid rgba(201,169,110,0.5);
+          color:var(--gold-light); background:rgba(12,11,9,0.5); backdrop-filter:blur(8px);
+          font-family:'Montserrat',sans-serif; font-size:11px;
+          letter-spacing:0.25em; font-weight:500; cursor:pointer;
+          text-decoration:none; transition:background 0.3s,border-color 0.3s,gap 0.3s;
+        }
+        .ghost-btn:hover { background:rgba(201,169,110,0.1); border-color:rgba(201,169,110,0.8); gap:16px; }
+
+        ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:var(--dark)} ::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+      `}</style>
+
+            <div className="noise-overlay" />
+
+            {/* ─── HERO ──────────────────────────────────────────── */}
+            <div ref={heroRef} style={{ position: "relative", height: "100svh", overflow: "hidden" }}>
+                <motion.div style={{ y: heroY, position: "absolute", inset: 0, scale: 1.1 }}>
+                    <img src="/assets/images/about/about_us.jpg" alt="About Us hero"
+                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom,rgba(12,11,9,0.25) 0%,rgba(12,11,9,0.5) 50%,rgba(12,11,9,0.97) 100%)" }} />
+                </motion.div>
+
+                <motion.div style={{ opacity: heroOpacity, position: "absolute", inset: 0 }} className="flex flex-col justify-center">
+                    <div style={{ position: "absolute", top: 40, left: 0, right: 0, display: "flex", justifyContent: "flex-end", padding: "0 60px", fontFamily: "'Montserrat',sans-serif", fontSize: 11, letterSpacing: "0.2em", color: "rgba(255,255,255,0.5)" }}>
+                        <Link href="/" style={{ color: "inherit", textDecoration: "none" }}
+                            onMouseEnter={e => (e.currentTarget.style.color = "white")}
+                            onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}>HOME</Link>
+                        <span style={{ margin: "0 12px", color: "var(--gold)", opacity: 0.5 }}>—</span>
+                        <span style={{ color: "var(--gold-light)" }}>ABOUT US</span>
+                    </div>
+
+                    <motion.div initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+                        style={{ padding: "0 60px 80px" }}>
+                        <p style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 11, letterSpacing: "0.35em", color: "var(--gold)", marginBottom: 20 }}>
+                            CRAFTSMANSHIP · QUALITY · LEGACY
+                        </p>
+                        <h1 style={{ fontSize: "clamp(3.5rem,9vw,8.5rem)", fontWeight: 300, lineHeight: 0.9, color: "var(--cream)", letterSpacing: "-0.02em", marginBottom: 28 }}>
+                            Who We<br /><em className="gold-shimmer" style={{ fontStyle: "italic", fontWeight: 400 }}>Are.</em>
                         </h1>
+                        <div className="divider" style={{ width: 100, marginBottom: 24 }} />
+                        <p style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 12, letterSpacing: "0.1em", color: "rgba(245,240,232,0.4)", maxWidth: 360, lineHeight: 1.9, fontWeight: 300 }}>
+                            Romoso Ceramica — where each surface tells a story of precision, beauty, and enduring craftsmanship.
+                        </p>
+                    </motion.div>
 
-                        {/* Breadcrumb: Aligns nicely with heading on Mobile, to the right on Desktop */}
-                        <div className="md:mt-[30%] flex items-center space-x-2 text-base md:text-xl text-gray-300">
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}
+                        style={{ position: "absolute", bottom: 40, right: 60, display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+                        <span style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 9, letterSpacing: "0.25em", color: "var(--text-muted)" }}>SCROLL</span>
+                        <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                            style={{ width: 1, height: 40, background: "linear-gradient(to bottom,var(--gold),transparent)" }} />
+                    </motion.div>
+                </motion.div>
+            </div>
 
-                            <Link
-                                href="/"
-                                className="text-white hover:text-gray-400 transition-colors duration-300 font-medium"
-                            >
-                                Home
-                            </Link>
+            {/* ─── WELCOME / HIGHLIGHTS — on tile background ─────── */}
+            <TileBgSection style={{ padding: "120px clamp(24px,5vw,60px)" }}>
+                <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+                    <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} style={{ textAlign: "center", marginBottom: 80 }}>
+                        <motion.p variants={fadeUp} style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 10, letterSpacing: "0.35em", color: "var(--gold)", marginBottom: 16 }}>
+                            WELCOME TO ROMOSO CERAMICA
+                        </motion.p>
+                        <motion.h2 variants={fadeUp} custom={1} style={{ fontSize: "clamp(2.2rem,5vw,4rem)", fontWeight: 300, color: "var(--cream)", lineHeight: 1.1, marginBottom: 24 }}>
+                            A Legacy of{" "}<em className="gold-shimmer" style={{ fontStyle: "italic" }}>Beautiful Surfaces</em>
+                        </motion.h2>
+                        <motion.div variants={fadeUp} custom={2} className="divider" style={{ width: 80, margin: "0 auto 28px" }} />
+                        <motion.p variants={fadeUp} custom={3} style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 13, letterSpacing: "0.06em", color: "var(--text-muted)", maxWidth: 580, margin: "0 auto", lineHeight: 2, fontWeight: 300 }}>
+                            Romoso Ceramica offers premium tiles and slabs for modern spaces, combining aesthetics, durability, and sustainable design solutions.
+                        </motion.p>
+                    </motion.div>
 
-                            <span className="text-gray-400 font-light">/</span>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 20 }}>
+                        {highlightData.map((item, i) => (
+                            <motion.div key={i} custom={i} initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} className="highlight-card">
+                                <div style={{ width: 56, height: 56, borderRadius: "50%", border: "1px solid rgba(201,169,110,0.3)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "1.3rem", color: "var(--gold)" }}>
+                                    {item.icon}
+                                </div>
+                                <p className="gold-shimmer" style={{ fontSize: "2.2rem", fontWeight: 300, color: "var(--cream)", letterSpacing: "-0.02em", marginBottom: 6 }}>{item.title}</p>
+                                <p style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 10, letterSpacing: "0.2em", color: "var(--text-muted)" }}>{item.sub}</p>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </TileBgSection>
 
-                            <span className="font-bold text-gray-500 tracking-wider">
-                                About Us
-                            </span>
+            {/* ─── TILE PEEK DIVIDER ─────────────────────────────── */}
+            <TilePeekDivider label="OUR STORY" />
 
-                        </div>
+            {/* ─── STORY SECTION — plain dark ────────────────────── */}
+            <div className="grid-bg" style={{ padding: "120px clamp(24px,5vw,60px)" }}>
+                <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 80, alignItems: "center" }}>
+
+                        {/* Overlapping images */}
+                        <motion.div initial={{ opacity: 0, x: -60 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+                            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                            style={{ flex: "1 1 420px", position: "relative", minHeight: 480 }}>
+                            <div style={{ position: "absolute", top: 0, left: 0, width: "68%", zIndex: 2, border: "1px solid rgba(201,169,110,0.15)", overflow: "hidden" }}>
+                                <Image src="/assets/images/about/about2.jpg" alt="Tiles interior" width={600} height={420}
+                                    style={{ objectFit: "cover", width: "100%", height: "auto", display: "block" }} />
+                            </div>
+                            <div style={{ position: "absolute", bottom: 0, right: 0, width: "68%", border: "1px solid rgba(201,169,110,0.15)", overflow: "hidden" }}>
+                                <Image src="/assets/images/about/about1.jpg" alt="Tiles bathroom" width={600} height={420}
+                                    style={{ objectFit: "cover", width: "100%", height: "auto", display: "block" }} />
+                            </div>
+                            <div style={{ position: "absolute", bottom: "18%", left: "25%", width: 80, height: 80, border: "1px solid rgba(201,169,110,0.25)", zIndex: 3, background: "var(--dark)" }} />
+                        </motion.div>
+
+                        {/* Text */}
+                        <motion.div initial={{ opacity: 0, x: 60 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+                            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+                            style={{ flex: "1 1 380px" }}>
+                            <p style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 10, letterSpacing: "0.35em", color: "var(--gold)", marginBottom: 16 }}>ABOUT US</p>
+                            <h2 style={{ fontSize: "clamp(2rem,4vw,3.5rem)", fontWeight: 300, color: "var(--cream)", lineHeight: 1.1, marginBottom: 24 }}>
+                                Choose the Color<br /><em style={{ fontStyle: "italic", color: "var(--gold-light)" }}>For Your Home</em>
+                            </h2>
+                            <div className="divider" style={{ width: 80, marginBottom: 28 }} />
+                            <p style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 13, letterSpacing: "0.05em", color: "var(--text-muted)", lineHeight: 2, fontWeight: 300, marginBottom: 36 }}>
+                                At Romoso Ceramica, with a wide range of premium tiles and slabs, we bring together design, durability, and innovation to transform interiors and exteriors alike. Our collections are crafted to meet the highest standards of quality, offering versatile solutions that blend aesthetics with functionality.
+                            </p>
+                            <div style={{ display: "flex", gap: 40, marginBottom: 32, flexWrap: "wrap" }}>
+                                {[{ icon: <FaWarehouse />, label: "Industrial Flooring" }, { icon: <FaBorderAll />, label: "Laminate Flooring" }].map((f, i) => (
+                                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                                        <div style={{ width: 44, height: 44, border: "1px solid rgba(201,169,110,0.25)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--gold)", fontSize: "1.1rem" }}>{f.icon}</div>
+                                        <span style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 11, letterSpacing: "0.15em", color: "var(--cream)", fontWeight: 500 }}>{f.label.toUpperCase()}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <div style={{ borderLeft: "1px solid rgba(201,169,110,0.25)", paddingLeft: 20 }}>
+                                {["Elegance that a reader will be distracted by content", "Romoso Ceramica defines quality in every design", "Timeless style, modern execution"].map((item, i) => (
+                                    <p key={i} style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 11, letterSpacing: "0.07em", color: "var(--text-muted)", marginBottom: 12, lineHeight: 1.8 }}>— {item}</p>
+                                ))}
+                            </div>
+                        </motion.div>
                     </div>
                 </div>
             </div>
-            {/* Highlights Section (white background) */}
-            <Section >
-                <Typography variant="h4" fontWeight="bold" sx={{ textAlign: "center", mb: 3 }}>
-                    Welcome to{" "}
-                    <Box
-                        component="span"
-                        sx={{
-                            background: "linear-gradient(to right, #000, #0f766e)",
-                            WebkitBackgroundClip: "text",
-                            color: "transparent",
-                        }}
-                    >
-                        Romoso Ceramica
-                    </Box>
-                </Typography>
 
-                <Typography
-                    sx={{
-                        textAlign: "center",
-                        mb: 10,
-                        color: "#555",
-                        maxWidth: 720,
-                        mx: "auto",
-                        fontSize: "1.1rem",
-                        lineHeight: 1.8,
-                    }}
-                >
-                    Romoso Ceramica offers premium tiles and slabs for modern spaces, combining
-                    aesthetics, durability, and sustainable design solutions.
-                </Typography>
+            {/* ─── TILE PEEK DIVIDER ─────────────────────────────── */}
+            <TilePeekDivider label="OUR EXPERTISE" />
 
-                <FlexContainer>
-                    {highlightData.map((item, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, y: 40 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: i * 0.2, duration: 0.6 }}
-                            whileHover={{ scale: 1.05 }}
-                            style={{ flex: "0 0 25%" }}
-                        >
-                            <Card
-                                sx={{
-                                    p: 6,
-                                    borderRadius: 4,
-                                    textAlign: "center",
-                                    background: "rgba(255,255,255,0.9)",
-                                    boxShadow: "0 12px 30px rgba(0,0,0,0.1)",
-                                }}
-                            >
-                                <Box
-                                    sx={{
-                                        width: 64,
-                                        height: 64,
-                                        mx: "auto",
-                                        mb: 3,
-                                        borderRadius: "50%",
-                                        background: "linear-gradient(135deg,#0f766e,#000)",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        color: "#fff",
-                                        fontSize: "1.8rem",
-                                    }}
-                                >
-                                    {item.icon}
-                                </Box>
-                                <Typography
-                                    variant="h5"
-                                    fontWeight="bold"
-                                    sx={{
-                                        mb: 1,
-                                        background: "linear-gradient(to right,#000,#0f766e)",
-                                        WebkitBackgroundClip: "text",
-                                        color: "transparent",
-                                    }}
-                                >
-                                    {item.title}
-                                </Typography>
-                                <Typography sx={{ color: "#666", fontSize: "0.95rem", lineHeight: 1.6 }}>
-                                    {item.sub}
-                                </Typography>
-                            </Card>
-                        </motion.div>
-                    ))}
-                </FlexContainer>
-            </Section>
-
-
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: { xs: "column", md: "row" },
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 6,
-                    py: 12,
-                    px: { xs: 2, md: 8, lg: 12 },
-                    // bgcolor: "#F3F3F3FF",
-                }}
-            >
-                {/* Left overlapping images */}
-                <Box
-                    sx={{
-                        position: "relative",
-                        flex: { xs: "1 1 100%", md: "1 1 45%" },
-                        minHeight: 400,
-                    }}
-                >
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            width: { xs: "80%", md: "70%" },
-                            boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
-                            borderRadius: 2,
-                            overflow: "hidden",
-                            zIndex: 2,
-                        }}
-                    >
-                        <Image
-                            src="/assets/images/about/about2.jpg" // replace with your image
-                            alt="Kitchen"
-                            width={600}
-                            height={400}
-                            style={{ objectFit: "cover", width: "100%", height: "auto" }}
-                        />
-                    </Box>
-
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            bottom: 0,
-                            right: 0,
-                            width: { xs: "80%", md: "70%" },
-                            boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
-                            borderRadius: 2,
-                            overflow: "hidden",
-                        }}
-                    >
-                        <Image
-                            src="/assets/images/about/about1.jpg" // replace with your image
-                            alt="Bathroom"
-                            width={600}
-                            height={400}
-                            style={{ objectFit: "cover", width: "100%", height: "auto" }}
-                        />
-                    </Box>
-                </Box>
-
-                {/* Right content */}
-                <Box flex={{ xs: "1 1 100%", md: "1 1 45%" }}>
-                    <Typography
-                        sx={{
-                            textTransform: "uppercase",
-                            color: "#d97706",
-                            fontWeight: "600",
-                            mb: 1,
-                            letterSpacing: 1,
-                        }}
-                    >
-                        About Us
-                    </Typography>
-
-                    <Typography
-                        variant="h4"
-                        fontWeight="bold"
-                        sx={{ mb: 2, lineHeight: 1.3 }}
-                    >
-                        Choose Your Color What <br /> You Want For Your Home
-                    </Typography>
-
-                    <Typography sx={{ mb: 4, color: "text.secondary", maxWidth: 500 }}>
-                        At Romoso Ceramica With a wide range of premium tiles and slabs, we bring together design, durability, and innovation to transform interiors and exteriors alike. Our collections are crafted to meet the highest standards of quality, offering versatile solutions that blend aesthetics with functionality.
-
-                        Whether you’re designing a modern home, a luxury space, or a large-scale project, Romoso Ceramica provides the perfect foundation to create lasting impressions.
-                    </Typography>
-
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 40 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, ease: "easeOut" }}
-                    >
-                        <Box>
-                            {/* Icons Section */}
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    gap: 8,
-                                    mb: 4,
-                                    flexWrap: "wrap",
-                                }}
-                            >
-                                <motion.div
-                                    whileHover={{ scale: 1.05 }}
-                                    transition={{ type: "spring", stiffness: 200 }}
-                                >
-                                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                                        <FaWarehouse size={36} color="#d97706" />
-                                        <Typography fontWeight={600} fontSize="1.1rem">
-                                            Industrial Flooring
-                                        </Typography>
-                                    </Box>
-                                </motion.div>
-
-                                <motion.div
-                                    whileHover={{ scale: 1.05 }}
-                                    transition={{ type: "spring", stiffness: 200 }}
-                                >
-                                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                                        <FaBorderAll size={36} color="#d97706" />
-                                        <Typography fontWeight={600} fontSize="1.1rem">
-                                            Laminate Flooring
-                                        </Typography>
-                                    </Box>
-                                </motion.div>
-                            </Box>
-
-                            {/* Bullet Points */}
-                            <motion.ul
-                                initial={{ opacity: 0, x: -40 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.7, ease: "easeInOut", delay: 0.2 }}
-                                style={{
-                                    paddingLeft: "20px",
-                                    marginBottom: "24px",
-                                    color: "#555",
-                                    lineHeight: "1.8",
-                                }}
-                            >
-                                <li>It is a long established fact of elegance that a reader will be distracted</li>
-                                <li>Romoso Ceramica defines quality in every design</li>
-                                <li>There are many variations of timeless style</li>
-
-
-                            </motion.ul>
-
-                            {/* Button */}
-                            <motion.div
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                transition={{ type: "spring", stiffness: 200 }}
-                            >
-                                {/* <Button
-                  variant="contained"
-                  sx={{
-                    bgcolor: "#111827",
-                    px: 5,
-                    py: 1.8,
-                    borderRadius: 0,
-                    fontWeight: "600",
-                    letterSpacing: 1,
-                    fontSize: "0.9rem",
-                    "&:hover": { bgcolor: "#000" },
-                  }}
-                >
-                  READ MORE →
-                </Button> */}
-                            </motion.div>
-                        </Box>
+            {/* ─── SERVICES — on tile background ─────────────────── */}
+            <TileBgSection style={{ padding: "120px clamp(24px,5vw,60px)" }}>
+                <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+                    <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} style={{ marginBottom: 64 }}>
+                        <motion.p variants={fadeUp} style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 10, letterSpacing: "0.35em", color: "var(--gold)", marginBottom: 14 }}>OUR EXPERTISE</motion.p>
+                        <motion.h2 variants={fadeUp} custom={1} style={{ fontSize: "clamp(2rem,4vw,3.5rem)", fontWeight: 300, color: "var(--cream)", lineHeight: 1 }}>
+                            Comprehensive<em className="gold-shimmer" style={{ fontStyle: "italic", marginLeft: 14 }}>Tile Solutions</em>
+                        </motion.h2>
                     </motion.div>
-                </Box>
-            </Box>
-            {/* Services Section */}
-            <Box sx={{ py: 12, px: { xs: 2, md: 8, lg: 12 }, bgcolor: "#FAFAFADF", }}>
-                {/* Heading */}
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        mb: 6,
-                    }}
-                >
-                    <Box>
-                        <Typography
-                            sx={{
-                                textTransform: "uppercase",
-                                color: "#d97706",
-                                fontWeight: 600,
-                                letterSpacing: 1,
-                                mb: 1,
-                            }}
-                        >
-                            Our Expertise
-                        </Typography>
-                        <Typography variant="h4" fontWeight="bold">
-                            Comprehensive Tile Solutions
-                        </Typography>
-                    </Box>
-                </Box>
 
-                {/* Services */}
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr 1fr" },
-                        gap: 4,
-                    }}
-                >
-                    {[
-                        {
-                            icon: <FaTools />, // Tile fixing
-                            title: "Tile Fixing Services",
-                            desc: "Professional tile installation with precision, durability, and a flawless finish for every space.",
-                        },
-                        {
-                            icon: <FaStore />, // Tile selling
-                            title: "Tile Selling",
-                            desc: "Extensive collection of premium tiles available at competitive prices, tailored to every design need.",
-                        },
-                        {
-                            icon: <FaProjectDiagram />, // End-to-end solution
-                            title: "End-to-End Solutions",
-                            desc: "From consultation to installation, we provide complete tile solutions under one trusted roof.",
-                        },
-                        {
-                            icon: <FaBuilding />, // One-stop shop
-                            title: "One-Stop Shop",
-                            desc: "Discover everything related to tiles—variety, quality, and service—all in one convenient place.",
-                        },
-                    ].map((item, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, y: 40 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: i * 0.2, ease: "easeOut" }}
-                            whileHover={{ scale: 1.05 }}
-                        >
-                            <Box
-                                sx={{
-                                    p: 5,
-                                    bgcolor: "#fff",
-                                    borderRadius: 3,
-                                    boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "flex-start",
-                                    height: "100%",
-                                    position: "relative",
-                                    overflow: "hidden",
-                                    transition: "all 0.3s ease",
-                                    "&:hover": {
-                                        boxShadow: "0 12px 30px rgba(0,0,0,0.12)",
-                                        "& .hoverLine": { width: "100%" },
-                                        "& .iconBox": {
-                                            background: "linear-gradient(135deg, #d97706, #000)",
-                                            color: "#fff",
-                                        },
-                                    },
-                                }}
-                            >
-                                {/* Icon with gradient hover */}
-                                <Box
-                                    className="iconBox"
-                                    sx={{
-                                        width: 60,
-                                        height: 60,
-                                        borderRadius: "50%",
-                                        bgcolor: "#fbbf24",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        mb: 3,
-                                        fontSize: "1.5rem",
-                                        color: "#111",
-                                        transition: "all 0.4s ease",
-                                    }}
-                                >
-                                    {item.icon}
-                                </Box>
-
-                                {/* Text */}
-                                <Typography
-                                    fontWeight={700}
-                                    variant="h6"
-                                    sx={{ mb: 1, color: "#111827" }}
-                                >
-                                    {item.title}
-                                </Typography>
-                                <Typography sx={{ color: "text.secondary", mb: 3 }}>
-                                    {item.desc}
-                                </Typography>
-
-                                {/* Bottom line animation */}
-                                <Box
-                                    className="hoverLine"
-                                    sx={{
-                                        mt: "auto",
-                                        height: "3px",
-                                        width: "0%",
-                                        bgcolor: "#d97706",
-                                        borderRadius: "2px",
-                                        transition: "width 0.4s ease",
-                                    }}
-                                />
-                            </Box>
-                        </motion.div>
-                    ))}
-                </Box>
-            </Box>
-
-            {/* Auto-Sliding Gallery Section */}
-            <Box
-                sx={{
-                    py: 12,
-                    px: { xs: 3, md: 8, lg: 14 },
-                    display: "flex",
-                    flexDirection: { xs: "column", md: "row" },
-                    alignItems: "center",
-                    gap: 8,
-                    background: "linear-gradient(to bottom, #ECECECFF, #ECECECFF)",
-                }}
-            >
-                {/* Left Content */}
-                <Box sx={{ flex: 1 }}>
-                    <Typography
-                        variant="overline"
-                        sx={{
-                            fontWeight: 600,
-                            color: "#0f766e",
-                            letterSpacing: 2,
-                            mb: 1,
-                            textTransform: "uppercase",
-
-                        }}
-                    >
-                        One Stop Shop for Tiles
-                    </Typography>
-
-                    <Typography
-                        variant="h3"
-                        fontWeight="bold"
-                        sx={{
-                            mb: 3,
-                            fontSize: { xs: "2rem", md: "2.8rem" },
-                            lineHeight: 1.2,
-                        }}
-                    >
-                        Discover your{" "}
-                        <Box
-                            component="span"
-                            sx={{
-                                background: "linear-gradient(to right, #000, #0f766e)",
-                                WebkitBackgroundClip: "text",
-                                color: "transparent",
-                            }}
-                        >
-                            dream tiles
-                        </Box>
-                    </Typography>
-
-                    <Typography
-                        sx={{
-                            color: "text.secondary",
-                            fontSize: "1.1rem",
-                            maxWidth: 520,
-                            lineHeight: 1.7,
-                        }}
-                    >
-                        From <strong>tile fixing</strong> to <strong>tile selling</strong>,
-                        we provide an end-to-end solution. Explore premium designs, durable
-                        finishes, and aesthetic styles that fit perfectly in your space.
-                    </Typography>
-                </Box>
-
-                {/* Right Auto-Sliding Gallery */}
-                <Box
-                    sx={{
-                        flex: 1,
-                        overflow: "hidden",
-                        position: "relative",
-                        py: 4,
-                    }}
-                >
-                    {/* Gradient Fade Overlay */}
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            left: 0,
-                            top: 0,
-                            bottom: 0,
-                            width: 80,
-                            background: "linear-gradient(to right, #fafafa, transparent)",
-                            zIndex: 2,
-                        }}
-                    />
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            right: 0,
-                            top: 0,
-                            bottom: 0,
-                            width: 80,
-                            background: "linear-gradient(to left, #fafafa, transparent)",
-                            zIndex: 2,
-                        }}
-                    />
-
-                    <Box sx={{ display: { xs: "none", md: "block" } }}>
-                        <motion.div
-                            initial={{ x: 0 }}
-                            animate={{ x: ["0%", "-50%"] }}
-                            transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-                            style={{
-                                display: "flex",
-                                gap: "28px",
-                            }}
-                        >
-                            {[...furnitureImages, ...furnitureImages].map((src, idx) => (
-                                <Card
-                                    key={idx}
-                                    sx={{
-                                        minWidth: 260,
-                                        height: 300,
-                                        borderRadius: 4,
-                                        overflow: "hidden",
-                                        flexShrink: 0,
-                                        boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-                                        transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                                        "&:hover": {
-                                            transform: "scale(1.05)",
-                                            boxShadow: "0 12px 30px rgba(0,0,0,0.15)",
-                                        },
-                                    }}
-                                >
-                                    <Image
-                                        src={src}
-                                        alt={`Tile ${idx}`}
-                                        width={320}
-                                        height={300}
-                                        style={{ objectFit: "cover" }}
-                                    />
-                                </Card>
-                            ))}
-                        </motion.div>
-                    </Box>
-
-                </Box>
-                {/* Mobile Grid */}
-                <Box
-                    sx={{
-                        display: { xs: "grid", md: "none" },
-                        gridTemplateColumns: "1fr 1fr",
-                        gap: 2,
-                    }}
-                >
-                    {furnitureImages.map((src, idx) => (
-                        <Card
-                            key={idx}
-                            sx={{
-                                width: "100%",
-                                borderRadius: 2,
-                                overflow: "hidden",
-                                boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                            }}
-                        >
-                            <Image
-                                src={src}
-                                alt={`Tile ${idx}`}
-                                width={300}
-                                height={200}
-                                style={{ objectFit: "cover", width: "100%", height: "100%" }}
-                            />
-                        </Card>
-                    ))}
-                </Box>
-            </Box>
-
-            {/* Call to Action */}
-            <section className="relative bg-gradient-to-r mb-20 from-black via-gray-900 to-black py-20 px-6 md:px-12 lg:px-20 text-center text-white overflow-hidden">
-                <div className="relative z-10">
-                    <h2 className="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-                        Ready to Transform Your Space?
-                    </h2>
-                    <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-                        Discover our premium tiles and slabs collection designed to inspire.
-                    </p>
-                    <Link
-                        href="/products"
-                        className="bg-white/80 backdrop-blur-md text-black px-8 py-3 rounded-full font-semibold hover:bg-white transition transform hover:scale-105 border border-white/30"
-                    >
-                        Explore Products
-                    </Link>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 20 }}>
+                        {services.map((s, i) => (
+                            <motion.div key={i} custom={i} initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} className="service-card">
+                                <div style={{ fontSize: "1.4rem", color: "var(--gold)", marginBottom: 24, width: 52, height: 52, border: "1px solid rgba(201,169,110,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    {s.icon}
+                                </div>
+                                <p style={{ fontSize: "1.4rem", fontWeight: 400, color: "var(--cream)", marginBottom: 12, lineHeight: 1.2 }}>{s.title}</p>
+                                <div className="divider" style={{ width: 40, marginBottom: 14 }} />
+                                <p style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 12, color: "var(--text-muted)", lineHeight: 1.9, fontWeight: 300 }}>{s.desc}</p>
+                            </motion.div>
+                        ))}
+                    </div>
                 </div>
-                {/* Background accents */}
-                <div className="absolute top-0 left-1/3 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gray-500/10 rounded-full blur-3xl"></div>
-            </section>
-        </Box >
+            </TileBgSection>
+
+            {/* ─── TILE PEEK DIVIDER ─────────────────────────────── */}
+            <TilePeekDivider label="DISCOVER OUR COLLECTION" />
+
+            {/* ─── GALLERY MARQUEE — plain dark ──────────────────── */}
+            <div style={{ padding: "120px 0", background: "var(--dark-2)", overflow: "hidden" }}>
+                <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 clamp(24px,5vw,60px)", marginBottom: 60 }}>
+                    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}
+                        style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", gap: 24 }}>
+                        <div>
+                            <p style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 10, letterSpacing: "0.35em", color: "var(--gold)", marginBottom: 14 }}>ONE STOP SHOP FOR TILES</p>
+                            <h2 style={{ fontSize: "clamp(2rem,4vw,3.5rem)", fontWeight: 300, color: "var(--cream)", lineHeight: 1 }}>
+                                Discover Your<br /><em className="gold-shimmer" style={{ fontStyle: "italic" }}>Dream Tiles</em>
+                            </h2>
+                        </div>
+                        <p style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 12, color: "var(--text-muted)", lineHeight: 2, maxWidth: 380, fontWeight: 300 }}>
+                            From tile fixing to tile selling, we provide an end-to-end solution. Explore premium designs, durable finishes, and aesthetic styles.
+                        </p>
+                    </motion.div>
+                </div>
+
+                <div style={{ position: "relative" }}>
+                    <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 120, zIndex: 2, background: "linear-gradient(to right,var(--dark-2),transparent)" }} />
+                    <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 120, zIndex: 2, background: "linear-gradient(to left,var(--dark-2),transparent)" }} />
+                    <div className="marquee-track">
+                        {[...galleryImages, ...galleryImages].map((src, idx) => (
+                            <div key={idx} style={{ width: 280, height: 320, flexShrink: 0, overflow: "hidden", border: "1px solid rgba(201,169,110,0.1)" }}>
+                                <img src={src} alt={`Tile ${idx}`}
+                                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.6s ease" }}
+                                    onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.05)")}
+                                    onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* ─── CTA — on tile background ──────────────────────── */}
+            <TileBgSection style={{ padding: "140px clamp(24px,5vw,60px)", textAlign: "center" }} tintOpacity={0.75}>
+                {/* Extra dark center vignette */}
+                <div style={{ position: "absolute", inset: 0, zIndex: 4, background: "radial-gradient(ellipse 65% 65% at 50% 50%,rgba(12,11,9,0.45) 0%,rgba(12,11,9,0.1) 100%)", pointerEvents: "none" }} />
+
+                {/* Corner accents */}
+                {[
+                    { top: "40px", left: "60px", borderTop: "1px solid rgba(201,169,110,0.25)", borderLeft: "1px solid rgba(201,169,110,0.25)" },
+                    { top: "40px", right: "60px", borderTop: "1px solid rgba(201,169,110,0.25)", borderRight: "1px solid rgba(201,169,110,0.25)" },
+                    { bottom: "40px", left: "60px", borderBottom: "1px solid rgba(201,169,110,0.25)", borderLeft: "1px solid rgba(201,169,110,0.25)" },
+                    { bottom: "40px", right: "60px", borderBottom: "1px solid rgba(201,169,110,0.25)", borderRight: "1px solid rgba(201,169,110,0.25)" },
+                ].map((s, i) => <div key={i} style={{ position: "absolute", zIndex: 5, width: 55, height: 55, ...s }} />)}
+
+                <div style={{ position: "relative", zIndex: 5, padding: "50px 60px 60px 50px" }}>
+                    <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
+                        <p style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 10, letterSpacing: "0.35em", color: "var(--gold)", marginBottom: 20 }}>READY TO BEGIN</p>
+                        <h2 style={{ fontSize: "clamp(2.5rem,6vw,6rem)", fontWeight: 300, lineHeight: 0.95, color: "var(--cream)", letterSpacing: "-0.02em", marginBottom: 24 }}>
+                            Transform Your<br /><em className="gold-shimmer" style={{ fontStyle: "italic", fontWeight: 400 }}>Space Today</em>
+                        </h2>
+                        <div className="divider" style={{ width: 80, margin: "0 auto 32px" }} />
+                        <p style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 12, color: "rgba(245,240,232,0.45)", marginBottom: 48, letterSpacing: "0.08em", lineHeight: 2 }}>
+                            Discover our premium tiles and slabs collection designed to inspire.
+                        </p>
+                        <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
+                            <Link href="/catalogue" className="ghost-btn">
+                                EXPLORE COLLECTION
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                            </Link>
+                            <Link href="/contact" className="ghost-btn" style={{ border: "1px solid rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.5)" }}>
+                                CONTACT US
+                            </Link>
+                        </div>
+                    </motion.div>
+                </div>
+            </TileBgSection>
+        </div>
     );
 }

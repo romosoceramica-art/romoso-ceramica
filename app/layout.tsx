@@ -31,7 +31,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             }`}
         >
           <Header />
-          <main className="pt-20">{children}</main>
+          <main className="pt-[100px]">{children}</main>
           <Footer />
         </div>
       </body>
