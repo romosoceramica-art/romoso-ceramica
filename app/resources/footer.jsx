@@ -424,7 +424,7 @@ export default function Footer() {
 
           {/* Column 4 — Contact */}
           <div>
-            <p className="footer-col-heading">Get in Touch with us</p>
+            <p className="footer-col-heading">Get in Touch</p>
             <ul className="footer-contact-list">
               <li className="footer-contact-item">
                 <span className="footer-contact-label">Electronic Mail</span>
