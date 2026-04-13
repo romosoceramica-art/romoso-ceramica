@@ -72,15 +72,7 @@ export default function HomeLanding() {
   const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
   const [currentHero, setCurrentHero] = useState(0);
-  const [typedText, setTypedText] = useState("");
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
-  const fullText = "Romoso Ceramica";
-
-  useEffect(() => {
-    let i = 0;
-    const t = setInterval(() => { setTypedText(fullText.slice(0, i + 1)); i++; if (i === fullText.length) clearInterval(t); }, 75);
-    return () => clearInterval(t);
-  }, []);
 
   useEffect(() => {
     const t = setInterval(() => setCurrentHero(p => (p + 1) % heroImages.length), 5000);
@@ -103,9 +95,6 @@ export default function HomeLanding() {
 
         @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
         .gold-shimmer { background:linear-gradient(90deg,var(--gold) 0%,var(--gold-light) 45%,var(--gold) 85%); background-size:200%; -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:shimmer 4s ease infinite; }
-
-        @keyframes cursor-blink { 0%,100%{opacity:1} 50%{opacity:0} }
-        .cursor { animation:cursor-blink 1s ease infinite; color:var(--gold); }
 
         /* ── STATS ── */
         .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); }
@@ -213,7 +202,7 @@ export default function HomeLanding() {
             </motion.p>
             <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
               style={{ fontSize: "clamp(2.6rem,8.5vw,9rem)", fontWeight: 300, lineHeight: 0.9, color: "var(--cream)", letterSpacing: "-0.02em" }}>
-              {typedText}<span className="cursor">|</span>
+              Romoso Ceramica
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.7 }}
               style={{ fontSize: "clamp(1.1rem,3vw,2.2rem)", fontStyle: "italic", fontWeight: 300, color: "var(--gold)", marginBottom: 32, marginTop: 12 }}>
@@ -278,7 +267,7 @@ export default function HomeLanding() {
             <div className="float-delay" style={{ position: "absolute", bottom: 0, right: 0, width: "66%", border: "1px solid rgba(201,169,110,0.15)", overflow: "hidden" }}>
               <img src={whoWeAreImages[1]} alt="Exterior" style={{ width: "100%", height: "280px", objectFit: "cover", display: "block" }} />
             </div>
-            <div style={{ position: "absolute", top: "20%", left: "58%", width: 72, height: 72, border: "1px solid rgba(201,169,110,0.2)", zIndex: 3, background: "var(--dark)" }} />
+            {/* <div style={{ position: "absolute", top: "20%", left: "58%", width: 72, height: 72, border: "1px solid rgba(201,169,110,0.2)", zIndex: 3, background: "var(--dark)" }} /> */}
             <motion.div initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.5, duration: 0.6 }}
               style={{ position: "absolute", bottom: "28%", left: "5%", zIndex: 4, background: "var(--dark-4)", border: "1px solid rgba(201,169,110,0.3)", padding: "16px 20px", minWidth: 120 }}>
               <p style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 9, letterSpacing: "0.2em", color: "var(--gold)", marginBottom: 4 }}>EST.</p>
@@ -423,7 +412,7 @@ export default function HomeLanding() {
               <div className="float-delay" style={{ position: "absolute", bottom: 0, right: 0, width: "66%", border: "1px solid rgba(201,169,110,0.2)", overflow: "hidden" }}>
                 <img src={whyChooseUsImages[1]} alt="Tile 2" style={{ width: "100%", height: "280px", objectFit: "cover", display: "block" }} />
               </div>
-              <div style={{ position: "absolute", bottom: "22%", left: "58%", width: 72, height: 72, border: "1px solid rgba(201,169,110,0.25)", background: "rgba(12,11,9,0.6)", backdropFilter: "blur(4px)" }} />
+              {/* <div style={{ position: "absolute", bottom: "22%", left: "58%", width: 72, height: 72, border: "1px solid rgba(201,169,110,0.25)", background: "rgba(12,11,9,0.6)", backdropFilter: "blur(4px)" }} /> */}
               <motion.div initial={{ opacity: 0, rotate: -8, scale: 0.8 }} whileInView={{ opacity: 1, rotate: 0, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.6, duration: 0.7 }}
                 style={{ position: "absolute", top: "32%", right: "8%", zIndex: 5, background: "rgba(37,33,24,0.85)", backdropFilter: "blur(8px)", border: "1px solid rgba(201,169,110,0.4)", padding: "20px", textAlign: "center", minWidth: 100 }}>
                 <div style={{ fontSize: "1.4rem", color: "var(--gold)", marginBottom: 6 }}><FaShieldAlt /></div>

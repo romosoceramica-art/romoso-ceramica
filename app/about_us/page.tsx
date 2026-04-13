@@ -263,7 +263,7 @@ export default function AboutUs() {
                                 <Image src="/assets/images/about/about1.jpg" alt="Tiles bathroom" width={600} height={420}
                                     style={{ objectFit: "cover", width: "100%", height: "auto", display: "block" }} />
                             </div>
-                            <div style={{ position: "absolute", bottom: "18%", left: "25%", width: 80, height: 80, border: "1px solid rgba(201,169,110,0.25)", zIndex: 3, background: "var(--dark)" }} />
+                            {/* <div style={{ position: "absolute", bottom: "18%", left: "25%", width: 80, height: 80, border: "1px solid rgba(201,169,110,0.25)", zIndex: 3, background: "var(--dark)" }} /> */}
                         </motion.div>
 
                         {/* Text */}
