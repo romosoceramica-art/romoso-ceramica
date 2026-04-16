@@ -14,7 +14,7 @@
     "@mui/material": "^7.3.2",
     "@types/react-slick": "^0.23.13",
     "framer-motion": "^12.23.22",
-    "next": "^15.5.15",
+    "next": "^16.2.4",
     "next-google-translate-widget": "^1.0.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
