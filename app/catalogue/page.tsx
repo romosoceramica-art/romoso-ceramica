@@ -16,7 +16,7 @@ type PdfEntry = {
 };
 
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
-const tileCategories = ["ALL","PRECIOUS","MARBLE","CONCRETE","STONE","STRUCTURED","SOLID COLOR"];
+// const tileCategories = ["ALL","PRECIOUS","MARBLE","CONCRETE","STONE","STRUCTURED","SOLID COLOR"];
 const pdfCategories  = ["ALL","FLOORING","WALL","OUTDOOR","SLAB","STONE"];
 
 const tagColors: Record<string,{bg:string;border:string;text:string}> = {
@@ -189,9 +189,9 @@ function PdfCard({ pdf, onPreview }: { pdf:PdfEntry; onPreview:()=>void }) {
 
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 export default function TilesCatalogue() {
-  const [searchQuery,  setSearchQuery]  = useState("");
-  const [activeTab,    setActiveTab]    = useState("ALL");
-  const [hoveredTile,  setHoveredTile]  = useState<string|null>(null);
+  // const [searchQuery,  setSearchQuery]  = useState("");
+  // const [activeTab,    setActiveTab]    = useState("ALL");
+  // const [hoveredTile,  setHoveredTile]  = useState<string|null>(null);
   const [activePdfCat, setActivePdfCat] = useState("ALL");
   const [previewPdf,   setPreviewPdf]   = useState<PdfEntry|null>(null);
 
@@ -200,9 +200,9 @@ export default function TilesCatalogue() {
   const heroY       = useTransform(scrollYProgress, [0,1],   ["0%","30%"]);
   const heroOpacity = useTransform(scrollYProgress, [0,0.8], [1,0]);
 
-  const filteredTiles = (
-    activeTab==="ALL" ? tilesData : tilesData.filter(t=>t.categories.some(c=>c.toUpperCase()===activeTab))
-  ).filter(t=>t.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  // const filteredTiles = (
+  //   activeTab==="ALL" ? tilesData : tilesData.filter(t=>t.categories.some(c=>c.toUpperCase()===activeTab))
+  // ).filter(t=>t.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const filteredPdfs: PdfEntry[] = (
     activePdfCat==="ALL" ? pdfsData : pdfsData.filter((p:any)=>p.category===activePdfCat)
@@ -214,8 +214,8 @@ export default function TilesCatalogue() {
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
         :root{ --gold:#c9a96e; --gold-light:#e8d5a3; --cream:#f5f0e8; --dark:#0c0b09; --dark-2:#161410; --dark-3:#1e1c18; --dark-4:#252118; --text-muted:#7a7060; }
         *{ box-sizing:border-box; }
-        .tile-card-img{ transition:transform 0.85s cubic-bezier(0.22,1,0.36,1); }
-        .tile-card:hover .tile-card-img{ transform:scale(1.08); }
+        /* .tile-card-img{ transition:transform 0.85s cubic-bezier(0.22,1,0.36,1); } */
+        /* .tile-card:hover .tile-card-img{ transform:scale(1.08); } */
         .search-input::placeholder{ color:#5a5040; }
         .search-input:focus{ outline:none; }
         .tab-btn{ font-family:'Montserrat',sans-serif; font-size:11px; letter-spacing:0.18em; font-weight:500; transition:all 0.3s; border:none; cursor:pointer; background:transparent; position:relative; padding:10px 20px; color:#7a7060; }
@@ -228,7 +228,7 @@ export default function TilesCatalogue() {
         @keyframes shimmer{ 0%{background-position:-200% center} 100%{background-position:200% center} }
         .gold-shimmer{ background:linear-gradient(90deg,var(--gold) 0%,var(--gold-light) 40%,var(--gold) 80%); background-size:200%; -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:shimmer 4s ease infinite; }
         .hero-vertical-text{ writing-mode:vertical-rl; text-orientation:mixed; transform:rotate(180deg); font-family:'Montserrat',sans-serif; font-size:10px; letter-spacing:0.3em; color:var(--gold); opacity:0.7; }
-        .grid-line-bg{ background-image:linear-gradient(rgba(201,169,110,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,169,110,0.04) 1px,transparent 1px); background-size:80px 80px; }
+        /* .grid-line-bg{ background-image:linear-gradient(rgba(201,169,110,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,169,110,0.04) 1px,transparent 1px); background-size:80px 80px; } */
         ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:var(--dark)} ::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
         .pdf-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
         @media(max-width:1200px){ .pdf-grid{ grid-template-columns:repeat(3,1fr); } }
@@ -270,7 +270,7 @@ export default function TilesCatalogue() {
         </motion.div>
       </div>
 
-      {/* ══ TILES GRID ════════════════════════════════════════════ */}
+      {/* ══ TILES GRID — COMMENTED OUT ════════════════════════════
       <div className="grid-line-bg" style={{ background:"var(--dark)" }}>
         <div style={{ maxWidth:1600, margin:"0 auto", padding:"80px clamp(20px,5vw,64px)" }}>
           <motion.div initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.8 }}
@@ -338,6 +338,7 @@ export default function TilesCatalogue() {
           </motion.div>
         </div>
       </div>
+      ══ END TILES GRID ══════════════════════════════════════════ */}
 
       {/* ══ PDF CATALOGUES ════════════════════════════════════════ */}
       <div style={{ background:"var(--dark-2)", position:"relative", padding:"100px 0 80px" }}>
