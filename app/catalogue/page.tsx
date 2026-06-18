@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, cubicBezier } from "framer-motion";
-import tilesData from "./tiles.json";
 import pdfsData from "./pdf.json";
 import Link from "next/link";
 
@@ -16,7 +15,6 @@ type PdfEntry = {
 };
 
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
-// const tileCategories = ["ALL","PRECIOUS","MARBLE","CONCRETE","STONE","STRUCTURED","SOLID COLOR"];
 const pdfCategories  = ["ALL","FLOORING","WALL","OUTDOOR","SLAB","STONE"];
 
 const tagColors: Record<string,{bg:string;border:string;text:string}> = {
@@ -38,6 +36,7 @@ const cardVariants = {
 // ─── PDF PREVIEW MODAL ────────────────────────────────────────────────────────
 function PdfModal({ pdf, onClose }: { pdf:PdfEntry; onClose:()=>void }) {
   const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
 
   React.useEffect(() => {
     const onKey = (e:KeyboardEvent) => { if(e.key==="Escape") onClose(); };
@@ -65,7 +64,7 @@ function PdfModal({ pdf, onClose }: { pdf:PdfEntry; onClose:()=>void }) {
             </div>
           </div>
           <div style={{ display:"flex", gap:10, alignItems:"center", flexShrink:0 }}>
-            <a href={pdf.file} download={pdf.title+".pdf"}
+            <a href={pdf.file} download={pdf.title.replace(/\s+/g, "_")+".pdf"}
               style={{ display:"inline-flex", alignItems:"center", gap:7, padding:"8px 18px", background:"linear-gradient(135deg,rgba(201,169,110,0.18),rgba(201,169,110,0.07))", border:"1px solid rgba(201,169,110,0.4)", color:"var(--gold-light)", fontFamily:"'Montserrat',sans-serif", fontSize:10, letterSpacing:"0.18em", textDecoration:"none", cursor:"pointer", borderRadius:2, transition:"background 0.25s" }}
               onMouseEnter={e=>(e.currentTarget.style.background="rgba(201,169,110,0.25)")}
               onMouseLeave={e=>(e.currentTarget.style.background="linear-gradient(135deg,rgba(201,169,110,0.18),rgba(201,169,110,0.07))")}>
@@ -77,9 +76,9 @@ function PdfModal({ pdf, onClose }: { pdf:PdfEntry; onClose:()=>void }) {
           </div>
         </div>
 
-        {/* iFrame */}
+        {/* iFrame Container */}
         <div style={{ flex:1, position:"relative", overflow:"hidden", background:"#0c0b09" }}>
-          {!loaded && (
+          {!loaded && !error && (
             <div style={{ position:"absolute", inset:0, zIndex:2, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:16, background:"#0c0b09" }}>
               <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
                 <rect x="1" y="1" width="50" height="62" rx="3" fill="rgba(22,20,16,0.9)" stroke="rgba(201,169,110,0.22)" strokeWidth="1"/>
@@ -93,9 +92,26 @@ function PdfModal({ pdf, onClose }: { pdf:PdfEntry; onClose:()=>void }) {
               <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:10, letterSpacing:"0.28em", color:"var(--text-muted)" }}>LOADING PREVIEW…</p>
             </div>
           )}
-          <iframe key={pdf.file} src={`${pdf.file}#toolbar=1&view=FitH`} onLoad={()=>setLoaded(true)}
-            style={{ width:"100%", height:"100%", border:"none", display:"block", opacity:loaded?1:0, transition:"opacity 0.4s" }}
-            title={pdf.title}/>
+          {error && (
+            <div style={{ position:"absolute", inset:0, zIndex:2, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:16, background:"#0c0b09" }}>
+              <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="rgba(255,100,100,0.6)" strokeWidth="1.5">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 8v4M12 16h.01"/>
+              </svg>
+              <div style={{ textAlign:"center" }}>
+                <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:10, letterSpacing:"0.28em", color:"var(--text-muted)" }}>PREVIEW UNAVAILABLE</p>
+                <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:9, color:"var(--text-muted)", marginTop:8, opacity:0.7 }}>Use the download button to view the PDF</p>
+              </div>
+            </div>
+          )}
+          <iframe 
+            key={pdf.file} 
+            src={`${pdf.file}#toolbar=1&view=FitH`} 
+            onLoad={()=>{ setLoaded(true); setError(false); }}
+            onError={()=>{ setError(true); setLoaded(false); }}
+            style={{ width:"100%", height:"100%", border:"none", display:"block", opacity:(loaded && !error)?1:0, transition:"opacity 0.4s" }}
+            title={pdf.title}
+          />
         </div>
 
         {/* Footer */}
@@ -174,7 +190,7 @@ function PdfCard({ pdf, onPreview }: { pdf:PdfEntry; onPreview:()=>void }) {
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             VIEW
           </button>
-          <a href={pdf.file} download={pdf.title+".pdf"}
+          <a href={pdf.file} download={pdf.title.replace(/\s+/g, "_")+".pdf"}
             style={{ flex:2, padding:"9px 0", background:"linear-gradient(135deg,rgba(201,169,110,0.14),rgba(201,169,110,0.06))", border:"1px solid rgba(201,169,110,0.32)", color:"var(--gold-light)", fontFamily:"'Montserrat',sans-serif", fontSize:9, letterSpacing:"0.18em", textDecoration:"none", borderRadius:1, display:"flex", alignItems:"center", justifyContent:"center", gap:5, transition:"background 0.25s" }}
             onMouseEnter={e=>(e.currentTarget.style.background="rgba(201,169,110,0.24)")}
             onMouseLeave={e=>(e.currentTarget.style.background="linear-gradient(135deg,rgba(201,169,110,0.14),rgba(201,169,110,0.06))")}>
@@ -189,9 +205,6 @@ function PdfCard({ pdf, onPreview }: { pdf:PdfEntry; onPreview:()=>void }) {
 
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 export default function TilesCatalogue() {
-  // const [searchQuery,  setSearchQuery]  = useState("");
-  // const [activeTab,    setActiveTab]    = useState("ALL");
-  // const [hoveredTile,  setHoveredTile]  = useState<string|null>(null);
   const [activePdfCat, setActivePdfCat] = useState("ALL");
   const [previewPdf,   setPreviewPdf]   = useState<PdfEntry|null>(null);
 
@@ -199,10 +212,6 @@ export default function TilesCatalogue() {
   const { scrollYProgress } = useScroll({ target:heroRef, offset:["start start","end start"] });
   const heroY       = useTransform(scrollYProgress, [0,1],   ["0%","30%"]);
   const heroOpacity = useTransform(scrollYProgress, [0,0.8], [1,0]);
-
-  // const filteredTiles = (
-  //   activeTab==="ALL" ? tilesData : tilesData.filter(t=>t.categories.some(c=>c.toUpperCase()===activeTab))
-  // ).filter(t=>t.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const filteredPdfs: PdfEntry[] = (
     activePdfCat==="ALL" ? pdfsData : pdfsData.filter((p:any)=>p.category===activePdfCat)
@@ -214,8 +223,6 @@ export default function TilesCatalogue() {
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
         :root{ --gold:#c9a96e; --gold-light:#e8d5a3; --cream:#f5f0e8; --dark:#0c0b09; --dark-2:#161410; --dark-3:#1e1c18; --dark-4:#252118; --text-muted:#7a7060; }
         *{ box-sizing:border-box; }
-        /* .tile-card-img{ transition:transform 0.85s cubic-bezier(0.22,1,0.36,1); } */
-        /* .tile-card:hover .tile-card-img{ transform:scale(1.08); } */
         .search-input::placeholder{ color:#5a5040; }
         .search-input:focus{ outline:none; }
         .tab-btn{ font-family:'Montserrat',sans-serif; font-size:11px; letter-spacing:0.18em; font-weight:500; transition:all 0.3s; border:none; cursor:pointer; background:transparent; position:relative; padding:10px 20px; color:#7a7060; }
@@ -228,7 +235,6 @@ export default function TilesCatalogue() {
         @keyframes shimmer{ 0%{background-position:-200% center} 100%{background-position:200% center} }
         .gold-shimmer{ background:linear-gradient(90deg,var(--gold) 0%,var(--gold-light) 40%,var(--gold) 80%); background-size:200%; -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:shimmer 4s ease infinite; }
         .hero-vertical-text{ writing-mode:vertical-rl; text-orientation:mixed; transform:rotate(180deg); font-family:'Montserrat',sans-serif; font-size:10px; letter-spacing:0.3em; color:var(--gold); opacity:0.7; }
-        /* .grid-line-bg{ background-image:linear-gradient(rgba(201,169,110,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,169,110,0.04) 1px,transparent 1px); background-size:80px 80px; } */
         ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:var(--dark)} ::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
         .pdf-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
         @media(max-width:1200px){ .pdf-grid{ grid-template-columns:repeat(3,1fr); } }
@@ -269,76 +275,6 @@ export default function TilesCatalogue() {
           </motion.div>
         </motion.div>
       </div>
-
-      {/* ══ TILES GRID — COMMENTED OUT ════════════════════════════
-      <div className="grid-line-bg" style={{ background:"var(--dark)" }}>
-        <div style={{ maxWidth:1600, margin:"0 auto", padding:"80px clamp(20px,5vw,64px)" }}>
-          <motion.div initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.8 }}
-            style={{ display:"flex", flexWrap:"wrap", alignItems:"flex-end", justifyContent:"space-between", marginBottom:48, gap:24 }}>
-            <div>
-              <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:10, letterSpacing:"0.35em", color:"var(--gold)", marginBottom:12 }}>BROWSE COLLECTION</p>
-              <h2 style={{ fontSize:"clamp(2rem,5vw,4rem)", fontWeight:300, color:"var(--cream)", lineHeight:1 }}>
-                Our Tiles<span style={{ fontStyle:"italic", color:"var(--gold)", marginLeft:12 }}>&amp; Surfaces</span>
-              </h2>
-            </div>
-            <div style={{ position:"relative", minWidth:280 }}>
-              <svg style={{ position:"absolute", left:16, top:"50%", transform:"translateY(-50%)", color:"var(--text-muted)" }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-              <input type="text" placeholder="Search tiles…" value={searchQuery} onChange={e=>setSearchQuery(e.target.value)} className="search-input"
-                style={{ width:"100%", padding:"12px 16px 12px 40px", background:"var(--dark-3)", border:"1px solid rgba(201,169,110,0.15)", borderRadius:2, color:"var(--cream)", fontFamily:"'Montserrat',sans-serif", fontSize:12, letterSpacing:"0.08em", transition:"border-color 0.3s" }}
-                onFocus={e=>(e.currentTarget.style.borderColor="rgba(201,169,110,0.5)")}
-                onBlur={e =>(e.currentTarget.style.borderColor="rgba(201,169,110,0.15)")}/>
-            </div>
-          </motion.div>
-
-          <div className="divider-line"/>
-          <div style={{ display:"flex", alignItems:"center", overflowX:"auto", borderBottom:"1px solid rgba(201,169,110,0.1)", marginBottom:40 }}>
-            {tileCategories.map(cat=>(
-              <button key={cat} onClick={()=>setActiveTab(cat)} className={`tab-btn ${activeTab===cat?"active":""}`}>{cat}</button>
-            ))}
-            <span style={{ marginLeft:"auto", flexShrink:0, paddingRight:8, fontFamily:"'Montserrat',sans-serif", fontSize:10, letterSpacing:"0.15em", color:"var(--text-muted)", whiteSpace:"nowrap" }}>{filteredTiles.length} RESULTS</span>
-          </div>
-
-          <motion.div variants={containerVariants} initial="hidden" animate="show" key={activeTab+searchQuery}
-            style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))", gap:18 }}>
-            <AnimatePresence mode="popLayout">
-              {filteredTiles.length>0 ? filteredTiles.map((tile,i)=>(
-                <motion.div key={tile.name} variants={cardVariants} layout className="tile-card"
-                  style={{ position:"relative", borderRadius:2, overflow:"hidden", background:"var(--dark-3)", cursor:"pointer", border:"1px solid rgba(201,169,110,0.08)", gridRow:i%7===0?"span 2":"span 1" }}
-                  onMouseEnter={()=>setHoveredTile(tile.name)} onMouseLeave={()=>setHoveredTile(null)}>
-                  <div style={{ overflow:"hidden", height:i%7===0?"100%":"260px", minHeight:220 }}>
-                    <img src={tile.file} alt={tile.name} className="tile-card-img w-full h-full" style={{ objectFit:"cover", display:"block" }} loading="lazy"/>
-                  </div>
-                  <motion.div initial={false} animate={{ opacity:hoveredTile===tile.name?1:0 }} transition={{ duration:0.3 }}
-                    style={{ position:"absolute", inset:0, background:"linear-gradient(to top,rgba(12,11,9,0.95) 0%,rgba(12,11,9,0.4) 60%,transparent 100%)", display:"flex", flexDirection:"column", justifyContent:"flex-end", padding:20 }}>
-                    <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:9, letterSpacing:"0.25em", color:"var(--gold)", marginBottom:6 }}>{tile.categories.join(" · ")}</p>
-                    <p style={{ fontSize:"1.1rem", fontWeight:400, color:"var(--cream)", letterSpacing:"0.02em", lineHeight:1.2 }}>{tile.name}</p>
-                    <div style={{ marginTop:14, display:"flex", alignItems:"center", gap:8 }}>
-                      <div style={{ width:24, height:1, background:"var(--gold)" }}/>
-                    </div>
-                  </motion.div>
-                  <AnimatePresence>
-                    {hoveredTile!==tile.name && (
-                      <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
-                        style={{ position:"absolute", top:12, left:12, background:"rgba(12,11,9,0.75)", backdropFilter:"blur(8px)", border:"1px solid rgba(201,169,110,0.2)", padding:"4px 10px", borderRadius:1 }}>
-                        <span style={{ fontFamily:"'Montserrat',sans-serif", fontSize:9, letterSpacing:"0.2em", color:"var(--gold-light)" }}>{tile.categories[0]}</span>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              )) : (
-                <motion.div key="empty" initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
-                  style={{ gridColumn:"1 / -1", textAlign:"center", padding:"100px 0" }}>
-                  <div style={{ width:56, height:56, border:"1px solid rgba(201,169,110,0.3)", borderRadius:"50%", margin:"0 auto 20px", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-                  </div>
-                  <p style={{ fontFamily:"'Montserrat',sans-serif", fontSize:11, letterSpacing:"0.25em", color:"var(--text-muted)" }}>NO TILES FOUND</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        </div>
-      </div>
-      ══ END TILES GRID ══════════════════════════════════════════ */}
 
       {/* ══ PDF CATALOGUES ════════════════════════════════════════ */}
       <div style={{ background:"var(--dark-2)", position:"relative", padding:"100px 0 80px" }}>
