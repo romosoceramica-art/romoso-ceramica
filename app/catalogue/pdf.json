@@ -158,5 +158,29 @@
     "tag": "LUXURY",
     "file": "/assets/catalogues/Travertine Collection.pdf",
     "category": "STONE"
+  },
+  {
+    "title": "Positano Series Tiles",
+    "subtitle": "Coastal Inspired Tile Collection",
+    "size": "10.0 MB",
+    "tag": "NEW",
+    "file": "/assets/catalogues/Positano_Series_Tiles.pdf",
+    "category": "FLOORING"
+  },
+  {
+    "title": "Matera Terracotta Tile Series",
+    "subtitle": "Rustic Terracotta Collection",
+    "size": "23.5 MB",
+    "tag": "NEW",
+    "file": "/assets/catalogues/Matera_Terracotta_Tile_Series.pdf",
+    "category": "FLOORING"
+  },
+  {
+    "title": "Milan Chromatic Series",
+    "subtitle": "Bold Colour Palette Collection",
+    "size": "10.9 MB",
+    "tag": "NEW",
+    "file": "/assets/catalogues/Milan_Chromatic_Series.pdf",
+    "category": "WALL"
   }
 ]
