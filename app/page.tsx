@@ -245,7 +245,7 @@ export default function HomeLanding() {
         <div style={{ borderTop: "1px solid rgba(201,169,110,0.15)", borderBottom: "1px solid rgba(201,169,110,0.15)" }}>
           <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 clamp(16px,4vw,60px)" }}>
             <div className="stats-grid">
-              {[{ num: "500+", label: "TILE VARIETIES" }, { num: "15+", label: "YEARS CRAFTING" }, { num: "98%", label: "CLIENT SATISFACTION" }, { num: "40+", label: "COUNTRIES REACHED" }].map((s, i) => (
+              {[{ num: "500+", label: "TILE VARIETIES" }, { num: "10+", label: "YEARS CRAFTING" }, { num: "98%", label: "CLIENT SATISFACTION" }, { num: "7+", label: "COUNTRIES REACHED" }].map((s, i) => (
                 <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: i * 0.1 }}
                   className="stat-card" style={{ borderLeft: i > 0 ? "1px solid rgba(201,169,110,0.12)" : "none" }}>
                   <p className="gold-shimmer" style={{ fontSize: "clamp(1.6rem,3vw,2.8rem)", fontWeight: 300, marginBottom: 6 }}>{s.num}</p>
@@ -271,7 +271,7 @@ export default function HomeLanding() {
             <motion.div initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.5, duration: 0.6 }}
               style={{ position: "absolute", bottom: "28%", left: "5%", zIndex: 4, background: "var(--dark-4)", border: "1px solid rgba(201,169,110,0.3)", padding: "16px 20px", minWidth: 120 }}>
               <p style={{ fontFamily: "'Montserrat',sans-serif", fontSize: 9, letterSpacing: "0.2em", color: "var(--gold)", marginBottom: 4 }}>EST.</p>
-              <p style={{ fontSize: "2rem", fontWeight: 300, color: "var(--cream)", lineHeight: 1 }}>2010</p>
+              <p style={{ fontSize: "2rem", fontWeight: 300, color: "var(--cream)", lineHeight: 1 }}>2025</p>
             </motion.div>
           </motion.div>
           <motion.div variants={fadeRight} initial="hidden" whileInView="show" viewport={{ once: true }} style={{ flex: "1 1 380px" }}>

@@ -2,7 +2,7 @@
   {
     "title": "Romoso Ceramica 60×120 · 9mm Glossy",
     "subtitle": "Premium Glossy Series",
-    "size": "14.8 MB",
+    "size": "14.3 MB",
     "tag": "NEW",
     "file": "/assets/catalogues/60X120X9MM_GLOSSY.pdf",
     "category": "WALL"
@@ -10,15 +10,31 @@
   {
     "title": "Romoso Ceramica 60×120 · 9mm Matt",
     "subtitle": "Full Surface Matt Collection",
-    "size": "310 KB",
+    "size": "1.2 MB",
     "tag": "POPULAR",
     "file": "/assets/catalogues/60X120X9MM_MATT.pdf",
     "category": "FLOORING"
   },
   {
+    "title": "Romoso Ceramica 75×300 · Splender",
+    "subtitle": "Splender Linear Format Collection",
+    "size": "16.4 MB",
+    "tag": "NEW",
+    "file": "/assets/catalogues/75x300MM_SPLENDER.pdf",
+    "category": "WALL"
+  },
+  {
+    "title": "Romoso Ceramica 75×300 · Splender V",
+    "subtitle": "Splender Vertical Format Collection",
+    "size": "20.0 MB",
+    "tag": "NEW",
+    "file": "/assets/catalogues/75X300MM_SPLENDER_V.pdf",
+    "category": "WALL"
+  },
+  {
     "title": "Romoso Ceramica 600×600 · 20mm",
     "subtitle": "Outdoor & Patio Collection",
-    "size": "36.2 MB",
+    "size": "18.4 MB",
     "tag": "",
     "file": "/assets/catalogues/600X600X20MM.pdf",
     "category": "OUTDOOR"
@@ -26,7 +42,7 @@
   {
     "title": "Romoso Ceramica 600×1200 · 9mm ColorBody",
     "subtitle": "Through-Body Colour Series",
-    "size": "41.2 MB",
+    "size": "41.3 MB",
     "tag": "",
     "file": "/assets/catalogues/600X1200X9MM_COLORBODY.pdf",
     "category": "FLOORING"
@@ -42,7 +58,7 @@
   {
     "title": "Romoso Ceramica 600×1200 · 15mm Full Body",
     "subtitle": "Heavy-Duty Full Body Collection",
-    "size": "9.7 MB",
+    "size": "19.9 MB",
     "tag": "",
     "file": "/assets/catalogues/600X1200X15MM_FULLBODY.pdf",
     "category": "FLOORING"
@@ -50,7 +66,7 @@
   {
     "title": "Romoso Ceramica 600×1200 · 20mm",
     "subtitle": "Extra-Thick Durable Format",
-    "size": "30.2 MB",
+    "size": "30.7 MB",
     "tag": "BESTSELLER",
     "file": "/assets/catalogues/600X1200X20MM.pdf",
     "category": "OUTDOOR"
@@ -66,10 +82,18 @@
   {
     "title": "Romoso Ceramica 800×3200 · 15mm",
     "subtitle": "Extra-Long Format Slabs",
-    "size": "7.2 MB",
+    "size": "7.5 MB",
     "tag": "",
     "file": "/assets/catalogues/800X3200X15MM.pdf",
     "category": "SLAB"
+  },
+  {
+    "title": "Romoso Ceramica 1200×1200",
+    "subtitle": "Square Format Collection",
+    "size": "63.7 MB",
+    "tag": "NEW",
+    "file": "/assets/catalogues/1200X1200MM.pdf",
+    "category": "FLOORING"
   },
   {
     "title": "Romoso Ceramica 1200×1200 · 9mm",
@@ -82,7 +106,7 @@
   {
     "title": "Romoso Ceramica 1200×2400 · 9mm",
     "subtitle": "Signature Slab Series",
-    "size": "33.5 MB",
+    "size": "66.4 MB",
     "tag": "BESTSELLER",
     "file": "/assets/catalogues/1200X2400X9MM.pdf",
     "category": "SLAB"
@@ -90,7 +114,7 @@
   {
     "title": "Romoso Ceramica 1200×2800 · 6mm Glossy",
     "subtitle": "Ultra-Slim Glossy Format",
-    "size": "17.8 MB",
+    "size": "18.0 MB",
     "tag": "",
     "file": "/assets/catalogues/1200X2800X6MM_GLOSSY.pdf",
     "category": "WALL"
@@ -114,7 +138,7 @@
   {
     "title": "Romoso Ceramica 1600×3200 · 20mm",
     "subtitle": "Heavy-Duty Outdoor Grade",
-    "size": "10.3 MB",
+    "size": "20.3 MB",
     "tag": "",
     "file": "/assets/catalogues/1600X3200X20MM.pdf",
     "category": "OUTDOOR"
@@ -122,7 +146,7 @@
   {
     "title": "Romoso Ceramica 1600×3200 · 12mm",
     "subtitle": "Ultra-Large Format Collection",
-    "size": "25.2 MB",
+    "size": "50.4 MB",
     "tag": "NEW",
     "file": "/assets/catalogues/1600X3200X12MM.pdf",
     "category": "SLAB"
@@ -138,9 +162,17 @@
   {
     "title": "Travertine · Italian Tile Collection 1",
     "subtitle": "Natural Stone Heritage Series",
-    "size": "4.9 MB",
+    "size": "4.7 MB",
     "tag": "LUXURY",
     "file": "/assets/catalogues/Travertine - Italian Tile Collection.pdf",
+    "category": "STONE"
+  },
+  {
+    "title": "Travertine · Italian Tile Collection V2",
+    "subtitle": "Natural Stone Heritage Series, Expanded Edition",
+    "size": "26 MB",
+    "tag": "NEW",
+    "file": "/assets/catalogues/Travertine - Italian Tile Collection V2.pdf",
     "category": "STONE"
   },
   {
@@ -152,17 +184,9 @@
     "category": "STONE"
   },
   {
-    "title": "Travertine Collection",
-    "subtitle": "Italian Travertine Catalogue",
-    "size": "15.8 MB",
-    "tag": "LUXURY",
-    "file": "/assets/catalogues/Travertine Collection.pdf",
-    "category": "STONE"
-  },
-  {
     "title": "Positano Series Tiles",
     "subtitle": "Coastal Inspired Tile Collection",
-    "size": "10.0 MB",
+    "size": "10.2 MB",
     "tag": "NEW",
     "file": "/assets/catalogues/Positano_Series_Tiles.pdf",
     "category": "FLOORING"
@@ -170,7 +194,7 @@
   {
     "title": "Matera Terracotta Tile Series",
     "subtitle": "Rustic Terracotta Collection",
-    "size": "23.5 MB",
+    "size": "24.0 MB",
     "tag": "NEW",
     "file": "/assets/catalogues/Matera_Terracotta_Tile_Series.pdf",
     "category": "FLOORING"
@@ -178,7 +202,7 @@
   {
     "title": "Milan Chromatic Series",
     "subtitle": "Bold Colour Palette Collection",
-    "size": "10.9 MB",
+    "size": "11.2 MB",
     "tag": "NEW",
     "file": "/assets/catalogues/Milan_Chromatic_Series.pdf",
     "category": "WALL"
