@@ -354,10 +354,10 @@ export async function POST(req: Request) {
               <hr style="border:none; border-top:1px solid #E8E2DA; margin:30px 0;">
 
               <h3 style="margin:20px 0 15px 0; font-size:14px; color:#B58E5E; font-weight:700; letter-spacing:1px;">Contact Romoso Ceramica:</h3>
-              <p style="margin:6px 0; font-size:13px; color:#333;"><strong>📍 Location:</strong> Warehouse-16, Al Sajja, Sharjah, UAE</p>
-              <p style="margin:6px 0; font-size:13px; color:#333;"><strong>📞 Phone:</strong> <a href="tel:+971567027043" style="color:#B58E5E; text-decoration:none;">+971 56 702 7043</a></p>
-              <p style="margin:6px 0; font-size:13px; color:#333;"><strong>📧 Email:</strong> <a href="mailto:info@romosoceramica.com" style="color:#B58E5E; text-decoration:none;">info@romosoceramica.com</a></p>
-              <p style="margin:6px 0; font-size:13px; color:#333;"><strong>⏰ Hours:</strong> Monday - Friday, 9AM - 6PM</p>
+              <p style="margin:6px 0; font-size:13px; color:#333;"><strong> Location:</strong> Warehouse-16, Al Sajja, Sharjah, UAE</p>
+              <p style="margin:6px 0; font-size:13px; color:#333;"><strong>Phone:</strong> <a href="tel:+971567027043" style="color:#B58E5E; text-decoration:none;">+971 56 702 7043</a></p>
+              <p style="margin:6px 0; font-size:13px; color:#333;"><strong>Email:</strong> <a href="mailto:info@romosoceramica.com" style="color:#B58E5E; text-decoration:none;">info@romosoceramica.com</a></p>
+              <p style="margin:6px 0; font-size:13px; color:#333;"><strong>Hours:</strong> Monday - Friday, 9AM - 6PM</p>
 
             </td>
           </tr>
