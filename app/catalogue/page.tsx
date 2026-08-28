@@ -247,7 +247,7 @@ export default function TilesCatalogue() {
       {/* ══ HERO ══════════════════════════════════════════════════ */}
       <div ref={heroRef} style={{ position:"relative", height:"100svh", overflow:"hidden" }}>
         <motion.div style={{ y:heroY, position:"absolute", inset:0, scale:1.1 }}>
-          <img src="/assets/images/catalogue/catalogue.jpg" alt="Catalogue" style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+          <img src="/assets/images/catalogue/catalogue.png" alt="Catalogue" style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
           <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom,rgba(12,11,9,0.3) 0%,rgba(12,11,9,0.55) 50%,rgba(12,11,9,0.96) 100%)" }}/>
         </motion.div>
         <motion.div style={{ opacity:heroOpacity }} className="absolute inset-0 flex flex-col justify-center pb-20 px-10 md:px-24">

@@ -3,7 +3,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const RECIPIENT_EMAIL = "kk23223511@gmail.com";
+const RECIPIENT_EMAIL = "info@romosoceramica.com";
 
 export async function POST(req: Request) {
     const apiKey = process.env.RESEND_API_KEY;
