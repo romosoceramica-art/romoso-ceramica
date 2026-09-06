@@ -115,9 +115,9 @@ export default function ContactUs() {
 
   const stats = [
     { num: 500, suffix: "+", label: "Tile Varieties" },
-    { num: 15, suffix: "+", label: "Years Crafting" },
+    { num: 10, suffix: "+", label: "Years Crafting" },
     { num: 98, suffix: "%", label: "Satisfaction" },
-    { num: 40, suffix: "+", label: "Countries" },
+    { num: 7, suffix: "+", label: "Countries" },
   ];
 
   return (
