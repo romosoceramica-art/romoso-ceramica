@@ -1,48 +1,98 @@
-// romoso-ceramica/app/api/contact_us/route.ts
+// app/api/contact_us/route.ts
+// IMPROVED VERSION with better error handling and debugging
 
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
 const RECIPIENT_EMAIL = "info@romosoceramica.com";
 
+// Enable dynamic rendering for API routes
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-        console.error("RESEND_API_KEY is not set in environment variables!");
-        return NextResponse.json(
-            { success: false, error: "API Key is missing on the server." },
-            { status: 500 }
-        );
+  // ===== STEP 1: VALIDATE API KEY =====
+  const apiKey = process.env.RESEND_API_KEY;
+  
+  if (!apiKey) {
+    console.error("🔴 CRITICAL ERROR: RESEND_API_KEY is not set");
+    console.error("Missing environment variable in production");
+    console.error("Action: Add RESEND_API_KEY to Vercel Environment Variables");
+    
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: "Email service not configured on server",
+        code: "NO_API_KEY"
+      },
+      { status: 500 }
+    );
+  }
+
+  console.log("✅ RESEND_API_KEY found");
+
+  // ===== STEP 2: INITIALIZE RESEND =====
+  const resend = new Resend(apiKey);
+
+  try {
+    // ===== STEP 3: PARSE REQUEST =====
+    const { name, email, subject, message } = await req.json();
+
+    console.log("📨 Contact form received:");
+    console.log("  - Name:", name || "NOT PROVIDED");
+    console.log("  - Email:", email);
+    console.log("  - Subject:", subject || "NOT PROVIDED");
+    console.log("  - Message length:", message?.length || 0);
+
+    // ===== STEP 4: VALIDATE INPUT =====
+    if (!email || !message) {
+      console.warn("⚠️ Validation failed: missing email or message");
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: "Email and message are required",
+          code: "MISSING_FIELDS"
+        },
+        { status: 400 }
+      );
     }
-    const resend = new Resend(apiKey);
 
-    try {
-        const { name, email, subject, message } = await req.json();
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      console.warn("⚠️ Validation failed: invalid email format");
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: "Invalid email format",
+          code: "INVALID_EMAIL"
+        },
+        { status: 400 }
+      );
+    }
 
-        if (!email || !message) {
-            return NextResponse.json(
-                { success: false, error: "Email and message fields are required." },
-                { status: 400 }
-            );
-        }
+    // ===== STEP 5: FORMAT TIMESTAMPS =====
+    const currentYear = new Date().getFullYear();
+    const submittedAt = new Date().toLocaleString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short",
+    });
 
-        const currentYear = new Date().getFullYear();
-        const submittedAt = new Date().toLocaleString("en-US", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            timeZoneName: "short",
-        });
+    console.log("📅 Formatted timestamp:", submittedAt);
 
-        const result = await resend.emails.send({
-            from: "Romoso Ceramica <onboarding@resend.dev>",
-            to: RECIPIENT_EMAIL,
-            replyTo: email,
-            subject: subject || `New Inquiry from ${name} — Romoso Ceramica`,
-            html: `
+    // ===== STEP 6: SEND EMAIL TO YOUR BUSINESS =====
+    console.log("📤 Sending email to business...");
+
+    const businessEmailResult = await resend.emails.send({
+      from: "Romoso Ceramica <onboarding@resend.dev>",
+      to: RECIPIENT_EMAIL,
+      replyTo: email,
+      subject: subject || `New Inquiry from ${name} — Romoso Ceramica`,
+      html: `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,9 +122,9 @@ export async function POST(req: Request) {
               <table width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td>
-                    <!-- Logo image — replace src with your actual logo URL -->
+                    <!-- Logo image -->
                     <img src="https://romosoceramica.com/assets/images/company_logo/logo_white.png" alt="Romoso Ceramica" width="140" style="display:block; width:140px; height:auto;" onerror="this.style.display='none'">
-                    <!-- Fallback text logo if image fails -->
+                    <!-- Fallback text logo -->
                     <p style="margin:0; font-size:22px; font-weight:300; color:#FFFFFF; letter-spacing:4px; text-transform:uppercase;">
                       ROMOSO <span style="color:#B58E5E; font-weight:700;">CERAMICA</span>
                     </p>
@@ -238,22 +288,131 @@ export async function POST(req: Request) {
 </body>
 </html>
       `,
-        });
+    });
 
-        if (result.error) {
-            console.error("Resend Error:", result.error);
-            return NextResponse.json(
-                { success: false, error: `Email service failed: ${result.error.message}` },
-                { status: 500 }
-            );
-        }
-
-        return NextResponse.json({ success: true });
-    } catch (error: any) {
-        console.error("API critical error during processing:", error);
-        return NextResponse.json(
-            { success: false, error: "Internal server error. Check the API route logic and environment variables." },
-            { status: 500 }
-        );
+    // ===== STEP 7: CHECK FOR EMAIL ERRORS =====
+    if (businessEmailResult.error) {
+      console.error("❌ Resend API returned error:", businessEmailResult.error);
+      console.error("Error message:", businessEmailResult.error.message);
+      
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: "Failed to send email",
+          code: "EMAIL_SEND_FAILED",
+          details: businessEmailResult.error.message
+        },
+        { status: 500 }
+      );
     }
+
+    console.log("✅ Business email sent successfully. ID:", businessEmailResult.data?.id);
+
+    // ===== STEP 8: SEND CONFIRMATION EMAIL TO USER =====
+    console.log("📤 Sending confirmation email to user...");
+
+    try {
+      const confirmationResult = await resend.emails.send({
+        from: "Romoso Ceramica <onboarding@resend.dev>",
+        to: email,
+        subject: "We received your message - Romoso Ceramica",
+        html: `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0; padding:0; background-color:#F0EDE8; font-family:'Helvetica Neue', Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F0EDE8; padding: 40px 0;">
+    <tr>
+      <td align="center">
+        <table width="620" cellpadding="0" cellspacing="0" border="0" style="max-width:620px; width:100%;">
+          
+          <tr>
+            <td style="background:linear-gradient(90deg, #B58E5E 0%, #D4AF7A 50%, #B58E5E 100%); height:4px; border-radius:4px 4px 0 0;"></td>
+          </tr>
+
+          <tr>
+            <td style="background-color:#1A1A1A; padding: 36px 48px 30px 48px;">
+              <h2 style="margin:0; font-size:28px; font-weight:700; color:#FFFFFF; letter-spacing:1px;">Thank You, ${name}!</h2>
+              <p style="margin:8px 0 0 0; font-size:13px; color:#999;">We received your message</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="background-color:#FFFFFF; padding: 40px 48px;">
+              <p style="margin:0 0 20px 0; font-size:14px; color:#666; line-height:1.8;">
+                We have received your inquiry and will respond to you as soon as possible. Our team typically replies within <strong>24 hours on business days</strong>.
+              </p>
+
+              <div style="background-color:#FAF8F5; padding:20px; border-left:3px solid #B58E5E; border-radius:0 6px 6px 0; margin:30px 0;">
+                <p style="margin:0; font-size:10px; color:#B58E5E; letter-spacing:2px; text-transform:uppercase; font-weight:700; margin-bottom:10px;">Your Message:</p>
+                <p style="margin:0; font-size:14px; color:#333; white-space:pre-wrap; line-height:1.8;">${message}</p>
+              </div>
+
+              <hr style="border:none; border-top:1px solid #E8E2DA; margin:30px 0;">
+
+              <h3 style="margin:20px 0 15px 0; font-size:14px; color:#B58E5E; font-weight:700; letter-spacing:1px;">Contact Romoso Ceramica:</h3>
+              <p style="margin:6px 0; font-size:13px; color:#333;"><strong> Location:</strong> Warehouse-16, Al Sajja, Sharjah, UAE</p>
+              <p style="margin:6px 0; font-size:13px; color:#333;"><strong>Phone:</strong> <a href="tel:+971567027043" style="color:#B58E5E; text-decoration:none;">+971 56 702 7043</a></p>
+              <p style="margin:6px 0; font-size:13px; color:#333;"><strong>Email:</strong> <a href="mailto:info@romosoceramica.com" style="color:#B58E5E; text-decoration:none;">info@romosoceramica.com</a></p>
+              <p style="margin:6px 0; font-size:13px; color:#333;"><strong>Hours:</strong> Monday - Friday, 9AM - 6PM</p>
+
+            </td>
+          </tr>
+
+          <tr>
+            <td style="background:linear-gradient(90deg, #B58E5E 0%, #D4AF7A 50%, #B58E5E 100%); height:4px; border-radius:0 0 4px 4px;"></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+        `,
+      });
+
+      if (confirmationResult.error) {
+        console.warn("⚠️ Confirmation email failed (non-critical):", confirmationResult.error.message);
+      } else {
+        console.log("✅ Confirmation email sent successfully. ID:", confirmationResult.data?.id);
+      }
+    } catch (confirmError) {
+      console.warn("⚠️ Confirmation email error (non-critical):", confirmError);
+    }
+
+    // ===== STEP 9: SUCCESS RESPONSE =====
+    console.log("🎉 Contact form submission completed successfully");
+    
+    return NextResponse.json(
+      { 
+        success: true,
+        message: "Message sent successfully. We'll be in touch soon!"
+      },
+      { status: 200 }
+    );
+
+  } catch (error: any) {
+    console.error("🔴 CRITICAL ERROR in contact form handler:", error);
+    console.error("Error type:", error.constructor.name);
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
+    
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: "Internal server error. Please try again or contact us directly.",
+        code: "INTERNAL_ERROR",
+        details: process.env.NODE_ENV === "development" ? error.message : undefined
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// Handle other methods
+export async function OPTIONS(req: Request) {
+  return NextResponse.json({}, { status: 200 });
 }
