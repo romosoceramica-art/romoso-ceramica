@@ -30,10 +30,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
           className={`transition-opacity duration-500 ${isLoading ? 'opacity-0 pointer-events-none' : 'opacity-100'
             }`}
         >
-          {/* <Header /> */}
-          {/* <main className="pt-[100px]">{children}</main> */}
-          <main >{children}</main>
-          {/* <Footer /> */}
+          <Header />
+          <main className="pt-[100px]">{children}</main>
+          <Footer />
         </div>
       </body>
     </html>
